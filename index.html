@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABSU SUG Electoral System</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            background: #f4f4f4;
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            align-items: center;
+            background: #0047ab;
+            color: white;
+            padding: 10px 15px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .menu-icon {
+            font-size: 28px;
+            cursor: pointer;
+            margin-right: 15px;
+        }
+
+        .navbar h3 {
+            flex: 1;
+            text-align: center;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: #0047ab;
+            color: white;
+            height: 100vh;
+            position: fixed;
+            left: -260px;
+            top: 0;
+            padding-top: 60px;
+            transition: 0.3s ease-in-out;
+            box-shadow: 2px 0px 5px rgba(0,0,0,0.2);
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .sidebar ul li:hover {
+            background: #0057d4;
+        }
+
+        .sidebar ul li .material-icons {
+            margin-right: 10px;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 70px 20px;
+            transition: margin-left 0.3s;
+        }
+
+        /* Sections */
+        .section {
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
+            max-width: 500px;
+            margin: auto;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        h2 {
+            color: #0047ab;
+        }
+
+        /* Form and Buttons */
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #0047ab;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #002a80;
+        }
+
+          /* Candidate Voting Section */
+          .office-category {
+            margin-bottom: 20px;
+        }
+
+        .candidate-card {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .candidate-card span {
+            font-weight: bold;
+        }
+
+        .candidate-card button {
+            width: auto;
+            padding: 8px 15px;
+            background: #0047ab;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+
+        .candidate-card button:hover {
+            background: #002a80;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .sidebar {
+                width: 220px;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .main-content {
+                padding: 60px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <span class="material-icons menu-icon" onclick="toggleSidebar()">menu</span>
+        <h3>ABSU SUG Electoral System</h3>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <ul>
+            <li onclick="showSection('register')"><span class="material-icons">how_to_reg</span> Register</li>
+            <li onclick="showSection('vote')"><span class="material-icons">how_to_vote</span> Vote Now</li>
+            <li onclick="showSection('results')"><span class="material-icons">poll</span> Election Results</li>
+            <li onclick="showSection('admin')"><span class="material-icons">admin_panel_settings</span> Admin Panel</li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div id="register" class="section active">
+            <h2><span class="material-icons">person_add</span> Register for Voting</h2>
+            <form id="registerForm">
+                <input type="text" id="matric" placeholder="Enter Matric No" required>
+                <input type="text" id="department" placeholder="Department" required>
+                <button type="submit"><span class="material-icons">assignment</span> Get Voting ID</button>
+            </form>
+            <p id="voterID"></p>
+        </div>
+
+        <div id="vote" class="section">
+            <h2><span class="material-icons">ballot</span> Vote for Your Candidate</h2>
+            <div id="candidates"></div>
+            
+        </div>
+
+        <div id="results" class="section">
+            <h2><span class="material-icons">bar_chart</span> Live Election Results</h2>
+            <div id="result"></div>
+        </div>
+
+        <div id="admin" class="section">
+            <h2><span class="material-icons">settings</span> Admin Panel</h2>
+            <input type="text" id="candidateName" placeholder="Candidate Name">
+            <button onclick="addCandidate()"><span class="material-icons">add_circle</span> Add Candidate</button>
+            <h3>Candidate List</h3>
+            <ul id="adminCandidates"></ul>
+        </div>
+    </div>
+
+    <script>
+        let candidate = [
+        { name: "John Doe", position: "President", votes: 0 },
+        { name: "Jane Smith", position: "President", votes: 0 },
+        { name: "Michael Johnson", position: "Vice President", votes: 0 },
+        { name: "Emily Brown", position: "Vice President", votes: 0 },
+        { name: "David Wilson", position: "Secretary", votes: 0 },
+        { name: "Sarah Taylor", position: "Secretary", votes: 0 }
+    ];
+        document.addEventListener("DOMContentLoaded", function() {
+            showSection('register');
+
+            document.getElementById("registerForm").addEventListener("submit", function(event) {
+                event.preventDefault();
+                let matric = document.getElementById("matric").value;
+                let voterID = "VOTER-" + Math.floor(1000 + Math.random() * 9000);
+                document.getElementById("voterID").innerHTML = `Your Voting ID: <strong>${voterID}</strong>`;
+            });
+
+            loadCandidates();
+        });
+
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("active");
+        }
+
+        function showSection(section) {
+            document.querySelectorAll(".section").forEach(sec => sec.classList.remove("active"));
+            document.getElementById(section).classList.add("active");
+            toggleSidebar();
+        }
+
+        let candidates = candidate;
+
+        function addCandidate() {
+            let name = document.getElementById("candidateName").value;
+            if (name) {
+                candidates.push({ name: name,position:"", votes: 0 });
+                document.getElementById("candidateName").value = "";
+                loadCandidates();
+            }
+        }
+
+        function loadCandidates() {
+            let candidateList = document.getElementById("candidates");
+            let adminList = document.getElementById("adminCandidates");
+            let groupedCandidates = {};
+
+            candidates.forEach(candidate => {
+                if (!groupedCandidates[candidate.position]) {
+                    groupedCandidates[candidate.position] = [];
+                }
+                groupedCandidates[candidate.position].push(candidate);
+            });
+
+            
+            for (let position in groupedCandidates) {
+                let category = document.createElement("div");
+                category.classList.add("office-category");
+                category.innerHTML = `<h3>${position}</h3>`;
+
+                groupedCandidates[position].forEach(candidate => {
+                    let card = document.createElement("div");
+                    card.classList.add("candidate-card");
+                    card.innerHTML = `
+                        <span>${candidate.name}</span>
+                        <button onclick="vote('${candidate.name}')"><span class="material-icons">thumb_up</span> Vote</button>
+                    `;
+                   
+                    category.appendChild(card);
+                });
+
+                candidateList.appendChild(category);
+            }
+
+            adminList.innerHTML = "";
+            adminList.innerHTML += `<div class="candidate-card">${candidate.name}</div>`
+         
+        }
+
+
+        
+
+       /* function vote(index) {
+            let count = ++candidates[index].votes;
+            console.log(count);
+
+            alert(`You voted for ${candidates[index].name}`);
+        }*/
+        function vote(candidateName) {
+            let candidate = candidates.find(c => c.name === candidateName);
+            if (candidate) {
+               let vote =  ++candidate.votes;
+                alert(`You voted for ${candidate.name}`);
+                console.log(vote);
+                let result = document.getElementById("result");
+                let view = ''
+                candidates.forEach((candidat, index) => {
+                    
+                    view+=`<div class="candidate-card">${candidat.name} - ${candidat.position} <span>${candidat.votes}</span></div> `
+                })
+                result.innerHTML = view
+            }
+        }
+
+       
+    </script>
+
+</body>
+</html>
